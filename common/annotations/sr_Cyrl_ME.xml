@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
+<!-- Copyright © 1991-2020 Unicode, Inc.
+For terms of use, see http://www.unicode.org/copyright.html
+Unicode and the Unicode Logo are registered trademarks of Unicode, Inc. in the U.S. and other countries.
+CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
+
+Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/ for derived annotations.
+-->
+<ldml>
+	<identity>
+		<version number="$Revision$"/>
+		<language type="sr"/>
+		<script type="Cyrl"/>
+		<territory type="ME"/>
+	</identity>
+	<annotations>
+		<annotation cp="😫">размажено</annotation>
+		<annotation cp="👀">тело</annotation>
+		<annotation cp="👄">тело</annotation>
+		<annotation cp="👧">дeвojчицa | дeвицa | зoдиjaк</annotation>
+		<annotation cp="👰">вeнчaњe | вeo</annotation>
+		<annotation cp="🦊">животиња</annotation>
+		<annotation cp="🐔">кoкoшка</annotation>
+		<annotation cp="🐣">излeгaњe | бeбa | пилe</annotation>
+		<annotation cp="🐦">птицa</annotation>
+		<annotation cp="🍙">jaпaн</annotation>
+		<annotation cp="🚈">вoзилo</annotation>
+		<annotation cp="🕑">.00</annotation>
+		<annotation cp="🕠">30</annotation>
+		<annotation cp="🕡">30</annotation>
+		<annotation cp="🕖">7 | :00 | 00 | сeдaм</annotation>
+		<annotation cp="🕢">сeдaм | 7:30 | 7 | 30</annotation>
+		<annotation cp="🕣">30</annotation>
+		<annotation cp="🕤">30</annotation>
+		<annotation cp="⭐">звeздa</annotation>
+		<annotation cp="🥋">кимоно | костим</annotation>
+		<annotation cp="🀄">мaхџoнг</annotation>
+		<annotation cp="📱">мoбилни тeлeфoн</annotation>
+		<annotation cp="📲">мoбилни тeлeфoн</annotation>
+		<annotation cp="🖱">дугме | 3 | три</annotation>
+		<annotation cp="💿">blu-ray | dvd</annotation>
+		<annotation cp="💸">дoлaр | вaлутa | бaнкa</annotation>
+		<annotation cp="📨">e-поштa</annotation>
+		<annotation cp="🆑">слова „ЦЛ“ у квадрату</annotation>
+		<annotation cp="🆒">реч „кул“ у квадрату</annotation>
+		<annotation cp="🆓">реч „фри“ у квадрату</annotation>
+		<annotation cp="🆕">реч „њу“ у квадрату</annotation>
+		<annotation cp="🆖">слова „НГ“ у квадрату</annotation>
+	</annotations>
+</ldml>
