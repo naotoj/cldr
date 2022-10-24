@@ -2,11 +2,9 @@
 
 # Unicode Locale Data Markup Language (LDML)<br/>Part 4: Dates
 
-<!-- HTML: no header -->
-<table><tbody>
-<tr><td>Version</td><td><b>42 (draft)</b></td></tr>
-<tr><td>Editors</td><td>Peter Edberg and <a href="tr35.md#Acknowledgments">other CLDR committee members</a></td></tr>
-</tbody></table>
+|Version|43 (draft)        |
+|-------|------------------|
+|Editors|Peter Edberg and <a href="tr35.md#Acknowledgments">other CLDR committee members</a>|
 
 For the full header, summary, and status, see [Part 1: Core](tr35.md).
 
@@ -18,7 +16,12 @@ This is a partial document, describing only those parts of the LDML that are rel
 
 ### _Status_
 
-_This document has been reviewed by Unicode members and other interested parties, and has been approved for publication by the Unicode Consortium. This is a stable document and may be used as reference material or cited as a normative reference by other specifications._
+_This is a draft document which may be updated, replaced, or superseded by other documents at any time.
+Publication does not imply endorsement by the Unicode Consortium.
+This is not a stable document; it is inappropriate to cite this document as other than a work in progress._
+
+<!-- _This document has been reviewed by Unicode members and other interested parties, and has been approved for publication by the Unicode Consortium.
+This is a stable document and may be used as reference material or cited as a normative reference by other specifications._ -->
 
 > _**A Unicode Technical Standard (UTS)** is an independent specification. Conformance to the Unicode Standard does not imply conformance to any UTS._
 
@@ -67,7 +70,7 @@ The LDML specification is divided into the following parts:
       * 4.5.1.2 [Variable periods](#Variable_periods)
       * 4.5.1.3 [Parsing Day Periods](#Parsing_Day_Periods)
 * 5 [Time Zone Names](#Time_Zone_Names)
-  * Table: [<timeZoneNames> Elements Used for Fallback](#timeZoneNames_Elements_Used_for_Fallback)
+  * Table: [timeZoneNames Elements Used for Fallback](#timeZoneNames_Elements_Used_for_Fallback)
   * 5.1 [Metazone Names](#Metazone_Names)
 * 6 [Supplemental Time Zone Data](#Supplemental_Time_Zone_Data)
   * 6.1 [Metazones](#Metazones)
@@ -1378,7 +1381,7 @@ For more information, see [[Data Formats](tr35.md#DataFormats)].
 
 The following subelements of `<timeZoneNames>` are used to control the fallback process described in [Using Time Zone Names](#Using_Time_Zone_Names).
 
-###### Table: <a name="timeZoneNames_Elements_Used_for_Fallback" href="#timeZoneNames_Elements_Used_for_Fallback">&lt;timeZoneNames&gt; Elements Used for Fallback</a>
+###### Table: <a name="timeZoneNames_Elements_Used_for_Fallback" href="#timeZoneNames_Elements_Used_for_Fallback">timeZoneNames Elements Used for Fallback</a>
 
 <table><tbody>
 <tr><th>Element Name</th><th>Data Examples</th><th>Results/Comment</th></tr>

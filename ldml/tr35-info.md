@@ -2,11 +2,9 @@
 
 # Unicode Locale Data Markup Language (LDML)<br/>Part 6: Supplemental
 
-<!-- HTML: no header -->
-<table><tbody>
-<tr><td>Version</td><td><b>42 (draft)</b></td></tr>
-<tr><td>Editors</td><td>Steven Loomis (<a href="mailto:srloomis@unicode.org">srloomis@unicode.org</a>) and <a href="tr35.md#Acknowledgments">other CLDR committee members</a></td></tr>
-</tbody></table>
+|Version|43 (draft) |
+|-------|-----------|
+|Editors|Steven Loomis (<a href="mailto:srloomis@unicode.org">srloomis@unicode.org</a>) and <a href="tr35.md#Acknowledgments">other CLDR committee members|
 
 For the full header, summary, and status, see [Part 1: Core](tr35.md).
 
@@ -23,7 +21,12 @@ See <https://cldr.unicode.org> for up-to-date CLDR release data.
 
 ### _Status_
 
-_This document has been reviewed by Unicode members and other interested parties, and has been approved for publication by the Unicode Consortium. This is a stable document and may be used as reference material or cited as a normative reference by other specifications._
+_This is a draft document which may be updated, replaced, or superseded by other documents at any time.
+Publication does not imply endorsement by the Unicode Consortium.
+This is not a stable document; it is inappropriate to cite this document as other than a work in progress._
+
+<!-- _This document has been reviewed by Unicode members and other interested parties, and has been approved for publication by the Unicode Consortium.
+This is a stable document and may be used as reference material or cited as a normative reference by other specifications._ -->
 
 > _**A Unicode Technical Standard (UTS)** is an independent specification. Conformance to the Unicode Standard does not imply conformance to any UTS._
 
@@ -388,7 +391,7 @@ The alphabetic codes are only provided where different from the type. For exampl
 
 Where there is no corresponding code, sometimes private use codes are used, such as the numeric code for XK.
 
-The currencyCodes are mappings from three letter currency codes to numeric values (ISO 4217 [Current currency & funds code list](https://www.currency-iso.org/en/home/tables/table-a1.html)). The mapping currently covers only current codes and does not include historic currencies. For example:
+The currencyCodes are mappings from three letter currency codes to numeric values (ISO 4217, see [Current currency & funds code list](https://www.six-group.com/en/products-services/financial-information/data-standards.html#scrollTo=maintenance-agency)). The mapping currently covers only current codes and does not include historic currencies. For example:
 
 ```xml
 <currencyCodes type="AED" numeric="784" />
