@@ -85,6 +85,10 @@ The LDML specification is divided into the following parts:
   * [Element: displays](#Element_displays)
   * [Element: display](#Element_display)
   * [Element: displayOptions](#Element_displayOptions)
+  * [Element: forms](#Element_forms)
+  * [Element: form](#Element_form)
+    * [Implied Form Values](#implied-form-values)
+  * [Element: scanCodes](#Element_scanCodes)
   * [Element: layers](#Element_layers)
   * [Element: layer](#Element_layer)
   * [Element: row](#Element_row)
@@ -1163,6 +1167,119 @@ This attribute may be escaped with `\u` notation, see [Escaping](#Escaping).
 
 * * *
 
+### <a name="Element_forms" href="#Element_forms">Element: forms</a>
+
+This element represents a set of `form` elements which define the layout of a particular hardware form.
+
+
+> <small>
+>
+> Parents: [keyboard](#Element_keyboard)
+>
+> Children: [import](#Element_import), [form](#Element_form), [_special_](tr35.md#special)
+>
+> Occurrence: optional, single
+>
+> </small>
+
+***Syntax***
+
+```xml
+<forms>
+    <form id="iso">
+        <!-- ... -->
+    </form>
+    <form id="us">
+        <!-- ... -->
+    </form>
+</forms>
+```
+
+* * *
+
+### <a name="Element_form" href="#Element_form">Element: form</a>
+
+This element represents a specific `form` element which defines the layout of a particular hardware form.
+
+> *Note:* Most keyboards will not need to use this element directly, and the CLDR repository will not accept keyboards which define a custom `form` element.  This element is provided for two reasons:
+
+1. To formally specify the standard hardware arrangements used with CLDR for implementations. Implementations can verify the arrangement, and validate keyboards against the number of rows and the number of keys per row.
+
+2. To allow a way to customize the scancode layout for keyboards not intended to be included in the common CLDR repository.
+
+See [Implied Form Values](#implied-form-values), below.
+
+> <small>
+>
+> Parents: [forms](#Element_forms)
+>
+> Children: [scanCodes](#Element_scanCodes), [_special_](tr35.md#special)
+>
+> Occurrence: optional, multiple
+>
+> </small>
+
+_Attribute:_ `id` (required)
+
+> This attribute specifies the form id. The value may not be `touch`.
+
+***Syntax***
+
+```xml
+<form id="us">
+    <scanCodes codes="00 01 02"/>
+    <scanCodes codes="03 04 05"/>
+</form>
+```
+
+##### Implied Form Values
+
+There is an implied set of `<form>` elements corresponding to the default forms, thus implementations must behave as if there was the following import statement:
+
+```xml
+<keyboard>
+    <forms>
+        <import base="cldr" path="techpreview/scanCodes-implied.xml" /> <!-- the version will match the current conformsTo of the file -->
+    </forms>
+</keyboard>
+```
+
+Here is a summary of the implied form elements. Keyboards included in the CLDR Repository must only use these `form=` values and may not override the scanCodes.
+
+> - `touch` - Touch (non-hardware) layout.
+> - `abnt2` - Brazilian 103 key ABNT2 layout (iso + extra key near right shift)
+> - `iso` - European 102 key layout (extra key near left shift)
+> - `jis` - Japanese 109 key layout
+> - `us` - ANSI 101 key layout
+
+* * *
+
+### <a name="Element_scanCodes" href="#Element_scanCodes">Element: scanCodes</a>
+
+This element represents a keyboard row, and defines the scan codes for the non-frame keys in that row.
+
+> <small>
+>
+> Parents: [form](#Element_form)
+>
+> Children: none
+>
+> Occurrence: required, multiple
+>
+> </small>
+
+> _Attribute:_ `codes` (required)
+
+> The `codes` attribute is a space-separated list of 2-digit hex bytes, each representing a scan code.
+
+**Syntax**
+
+```xml
+<scanCodes codes="29 02 03 04 05 06 07 08 09 0A 0B 0C 0D" />
+```
+
+* * *
+
 ### <a name="Element_layers" href="#Element_layers">Element: layers</a>
 
 This element represents a set of `layer` elements with a specific physical form factor, whether
@@ -1201,13 +1318,8 @@ _Attribute:_ `form` (required)
 > When using an on-screen keyboard, if there is not a `<layers form="touch">`
 > element, the hardware elements can be used for on-screen use.
 >
-> The following values are allowed for the `form` attribute:
+> The value of the `form=` attribute may be `touch`, or correspond to a `form` element. See [`form`](#element-form).
 >
-> - `touch` - Touch (non-hardware) layout.
-> - `abnt2` - Brazilian 103 key ABNT2 layout (iso + extra key left of right shift)
-> - `iso` - European 102 key layout (extra key right of left shift)
-> - `jis` - Japanese 109 key layout
-> - `us` - ANSI 101 key layout
 
 _Attribute:_ `minDeviceWidth`
 
@@ -1301,6 +1413,8 @@ A `row` element describes the keys that are present in the row of a keyboard.
 _Attribute:_ `keys` (required)
 
 > This is a string that lists the id of [`key` elements](#Element_key) for each of the keys in a row, whether those are explicitly listed in the file or are implied.  See the `key` documentation for more detail.
+>
+> For non-`touch` forms, the number of keys in each row may not exceed the number of scan codes defined for that row, and the number of rows may not exceed the defined number of rows for that form. See [`scanCodes`](#Element_scanCodes);
 
 **Example**
 
@@ -1613,6 +1727,8 @@ There are other keying behaviors that are needed particularly in handing complex
 #### Markers
 
 Markers are placeholders which record some state, but without producing normal visible text output.  They were designed particularly to support dead-keys.
+
+The marker ID is any valid `NMTOKEN` (But see [CLDR-17043](https://unicode-org.atlassian.net/browse/CLDR-17043) for future discussion.)
 
 Consider the following abbreviated example:
 
@@ -2009,7 +2125,7 @@ The reordering algorithm consists of four parts:
    * `run := preBase* (primary=0 && tertiary=0) ((primary≠0 || tertiary≠0) && !preBase)*`
 4. Sort the character order of each character in the run based on its sort key.
 
-The primary order of a character with the Unicode property Combining_Character_Class (ccc) of 0 may well not be 0. In addition, a character may receive a different primary order dependent on context. For example, in the Devanagari sequence ka halant ka, the first ka would have a primary order 0 while the halant ka sequence would give both halant and the second ka a primary order > 0, for example 2. Note that “base” character in this discussion is not a Unicode base character. It is instead a character with primary=0.
+The primary order of a character with the Unicode property `Canonical_Combining_Class` (ccc) of 0 may well not be 0. In addition, a character may receive a different primary order dependent on context. For example, in the Devanagari sequence ka halant ka, the first ka would have a primary order 0 while the halant ka sequence would give both halant and the second ka a primary order > 0, for example 2. Note that “base” character in this discussion is not a Unicode base character. It is instead a character with primary=0.
 
 In order to get the characters into the correct relative order, it is necessary not only to order combining marks relative to the base character, but also to order some combining marks in a subsequence following another combining mark. For example in Devanagari, a nukta may follow a consonant character, but it may also follow a conjunct consisting of consonant, halant, consonant. Notice that the second consonant is not, in this model, the start of a new run because some characters may need to be reordered to before the first base, for example repha. The repha would get primary < 0, and be sorted before the character with order = 0, which is, in the case of Devanagari, the initial consonant of the orthographic syllable.
 
@@ -2350,8 +2466,8 @@ It is important that implementations do not by default delete more than one non-
 
     <!-- Final implicit backspace transform: Delete the final codepoint. -->
     <transformGroup>
-        <!-- (:?\m{*})*  - matches any number of contiguous markers -->
-        <transform from="(:?\m{*})*.(:?\m{*})*" /> <!-- deletes any number of markers directly on either side of the final pre-caret codepoint -->
+        <!-- (:?\m{.})*  - matches any number of contiguous markers -->
+        <transform from="(:?\m{.})*.(:?\m{.})*" /> <!-- deletes any number of markers directly on either side of the final pre-caret codepoint -->
     </transformGroup>
 </transforms>
 ```
