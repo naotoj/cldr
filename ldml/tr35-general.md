@@ -2,7 +2,7 @@
 
 # Unicode Locale Data Markup Language (LDML)<br/>Part 2: General
 
-|Version|44 (draft)           |
+|Version|45 (draft)           |
 |-------|---------------------|
 |Editors|Yoshito Umaoka (<a href="mailto:yoshito_umaoka@us.ibm.com">yoshito_umaoka@us.ibm.com</a>) and <a href="tr35.md#Acknowledgments">other CLDR committee members|
 
@@ -1003,7 +1003,7 @@ Some of the constraints reference data from the unitIdComponents in [Unit_Conver
 			or &lt;unitIdComponent type="per"&gt;.
 		</li>
 		<li><em>Constraint:</em> must not have a prefix as an initial segment.</li>
-		<li><em>Constraint:</em> no two different base_components will share the first 8 letters. 
+		<li><em>Constraint:</em> no two different base_components will share the first 8 letters.
 				(<b>For more information, see <a href="#Unit_Identifier_Uniqueness">Unit Identifier Uniqueness</a>.)</b>
 			</li>
 		</ul>
@@ -1214,7 +1214,8 @@ For temperature, there is a special unit `<unit type="temperature-generic">`, wh
 For duration, there are special units such as `<unit type="duration-year-person">` and `<unit type="duration-year-week">` for indicating the age of a person, which requires special forms in some languages. For example, in "zh", references to a person being 3 days old or 30 years old would use the forms “他3天大” and “他30岁” respectively.
 
 <a name="compoundUnitPattern"></a><a name="perUnitPatterns"></a>
-### <a name="compound-units" href="#compound-units">Compound Units</a>
+
+### Compound Units
 
 A common combination of units is X per Y, such as _miles per hour_ or _liters per second_ or _kilowatt-hours_.
 
@@ -1848,7 +1849,7 @@ If the direction is `forward`, then an ID is composed from `target + "-" + sourc
 
 The `visibility` attribute indicates whether the IDs should be externally visible, or whether they are only used internally.
 
-Note: In CLDR v28 and before, the rules were expressed as fine-grained XML. 
+Note: In CLDR v28 and before, the rules were expressed as fine-grained XML.
 That was discarded in CLDR version 29, in favor of a simpler format where the separate rules are simply terminated with ";".
 
 The transform rules are similar to regular-expression substitutions, but adapted to the specific domain of text transformations. The rules and comments in this discussion will be intermixed, with # marking the comments. The simplest rule is a conversion rule, which replaces one string of characters with another. The conversion rule takes the following form:
@@ -1966,11 +1967,42 @@ x → y | z ;
 z a → w ;
 ```
 
-First, "xa" is converted to "yza". Then the processing will continue from after the character "y", pick up the "za", and convert it. Had we not had the "|", the result would have been simply "yza". The '@' character can be used as filler character to place the revisiting point off the start or end of the string. Thus the following causes x to be replaced, and the cursor to be backed up by two characters.
+First, "xa" is converted to "yza". Then the processing will continue from after the character "y", pick up the "za", and convert it. Had we not had the "|", the result would have been simply "yza".
+
+The '@' character can be used as filler character to place the revisiting point off the start or end of the string — but only within the context. Consider the following rules, with the table afterwards showing how they work.
 
 ```
-x → |@@y;
+1. [a-z]{x > |@ab ;
+2. ab > J;
+3. ca > M;
 ```
+The ⸠ indicates the virtual cursor:
+
+| Current text | Matching rule |
+| - | - |
+| ⸠cx | no match, cursor advances one code point |
+| c⸠x | matches rule 1, so the text is replaced and cursor backs up. |
+| ⸠cab | matches rule 3, so the text is replaced, with cursor at the end. |
+| Mb⸠ | cursor is at the end, so we are done. |
+
+Notice that rule 2 did not have a chance to trigger.
+
+There is a current restriction that @ cannot back up before the before_context or after the after_context.
+Consider the rules if rule 1 is adjusted to have no before_context.
+
+```
+1'. x > |@ab ;
+2. ab > J ;
+3. ca > M;
+```
+
+In that case, the results are different.
+| Current text | Matching rule |
+| - | - |
+| ⸠cx | no match, cursor advances one code point |
+| c⸠x | matches rule 1, so the text is replaced and cursor backs up; but only to where  |
+| c⸠ab | matches **rule 2**, so the text is replaced, with cursor at the end. |
+| cJ⸠ | cursor is at the end, so we are done. |
 
 #### <a name="Example" href="#Example">Example</a>
 
@@ -2127,7 +2159,7 @@ Conversion rules can be forward, backward, or double. The complete conversion ru
 > b | c  ←  e { f g } h ;
 > ```
 
-The `completed_result` | `result_to_revisit` is also known as the `resulting_text`. Either or both of the values can be empty. For example, the following removes any a, b, or c. 
+The `completed_result` | `result_to_revisit` is also known as the `resulting_text`. Either or both of the values can be empty. For example, the following removes any a, b, or c.
 
 ```
 [a-c] → ;
@@ -2260,7 +2292,7 @@ Because the order of rules matters, the following will not work as expected
 c → s;
 ch → kh;
 ```
-The second rule can never execute, because it is "masked" by the first. 
+The second rule can never execute, because it is "masked" by the first.
 To help prevent errors, implementations should try to alert readers when this occurs, eg:
 ```
 Rule {c > s;} masks {ch > kh;}
@@ -2611,22 +2643,24 @@ Many emoji are represented by sequences of characters. When there are no `annota
 1.  If **sequence** is an **emoji flag sequence**, look up the territory name in CLDR for the corresponding ASCII characters and return as the short name. For example, the regional indicator symbols P+F would map to “Französisch-Polynesien” in German.
 2.  If **sequence** is an **emoji tag sequence**, look up the subdivision name in CLDR for the corresponding ASCII characters and return as the short name. For example, the TAG characters gbsct would map to “Schottland” in German.
 3.  If **sequence** is a keycap sequence or 🔟, use the characterLabel for "keycap" as the **prefixName** and set the **suffix** to be the sequence (or "10" in the case of 🔟), then go to step 8.
-4.  Let **suffix** and **prefixName** be "".
-5.  If **sequence** contains any emoji modifiers, move them (in order) into **suffix**, removing them from **sequence**.
-6.  If **sequence** is a "KISS", "HEART", "FAMILY", or "HOLDING HANDS" emoji ZWJ sequence, move the characters in **sequence** to the front of **suffix**, and set the **sequence** to be "💏", "💑", or "👪" respectively, and go to step 7.
+4.  If the **sequence** ends with the string ZWJ + ➡️, look up the name of that sequence with that string removed. Embed that name into the "facing-right" characterLabelPattern and return it. 
+5.  Let **suffix** and **prefixName** be "".
+6.  If **sequence** contains any emoji modifiers, move them (in order) into **suffix**, removing them from **sequence**.
+7.  If **sequence** is a "KISS", "HEART", "FAMILY", or "HOLDING HANDS" emoji ZWJ sequence, move the characters in **sequence** to the front of **suffix**, and set the **sequence** to be "💏", "💑", or "👪" respectively, and go to step 7.
     1. A KISS sequence contains ZWJ, "💋", and "❤", which are skipped in moving to **suffix**.
     2. A HEART sequence contains ZWJ and "❤", which are skipped in moving to **suffix**.
     3. A HOLDING HANDS sequence contains ZWJ+🤝+ZWJ, which are skipped in moving to **suffix**.
     4. A FAMILY sequence contains only characters from the set {👦, 👧, 👨, 👩, 👴, 👵, 👶}. Nothing is skipped in moving to **suffix**, except ZWJ.
-7.  If **sequence** ends with ♂ or ♀, and does not have a name, remove the ♂ or ♀ and move the name for "👨" or "👩" respectively to the start of **prefixName**.
-8.  Transform **sequence** and append to **prefixName**, by successively getting names for the longest subsequences, skipping any singleton ZWJ characters. If there is more than one name, use the listPattern for unit-short, type=2 to link them.
-9.  Transform **suffix** into **suffixName** in the same manner.
-10. If both the **prefixName** and **suffixName** are non-empty, form the name by joining them with the "category-list" characterLabelPattern and return it. Otherwise return whichever of them is non-empty.
+8.  If **sequence** ends with ♂ or ♀, and does not have a name, remove the ♂ or ♀ and move the name for "👨" or "👩" respectively to the start of **prefixName**.
+9.  Transform **sequence** and append to **prefixName**, by successively getting names for the longest subsequences, skipping any singleton ZWJ characters. If there is more than one name, use the listPattern for unit-short, type=2 to link them.
+10.  Transform **suffix** into **suffixName** in the same manner.
+11. If both the **prefixName** and **suffixName** are non-empty, form the name by joining them with the "category-list" characterLabelPattern and return it. Otherwise return whichever of them is non-empty.
 
 The synthesized keywords can follow a similar process.
 
 1.  For an **emoji flag sequence** or **emoji tag sequence** representing a subdivision, use "flag".
 2.  For keycap sequences, use "keycap".
+3.  For sequences with ZWJ + ➡️, use the keywords for the sequence without the ZWJ + ➡️.
 3.  For other sequences, add the keywords for the subsequences used to get the short names for **prefixName**, and the short names used for **suffixName**.
 
 Some examples for English data (v30) are given in the following table.
@@ -3047,6 +3081,6 @@ For example, for gram-per-meter, the first line above means:
 
 * * *
 
-Copyright © 2001–2023 Unicode, Inc. All Rights Reserved. The Unicode Consortium makes no expressed or implied warranty of any kind, and assumes no liability for errors or omissions. No liability is assumed for incidental and consequential damages in connection with or arising out of the use of the information or programs contained or accompanying this technical report. The Unicode [Terms of Use](https://www.unicode.org/copyright.html) apply.
+Copyright © 2001–2024 Unicode, Inc. All Rights Reserved. The Unicode Consortium makes no expressed or implied warranty of any kind, and assumes no liability for errors or omissions. No liability is assumed for incidental and consequential damages in connection with or arising out of the use of the information or programs contained or accompanying this technical report. The Unicode [Terms of Use](https://www.unicode.org/copyright.html) apply.
 
 Unicode and the Unicode logo are trademarks of Unicode, Inc., and are registered in some jurisdictions.
