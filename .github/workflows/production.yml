@@ -32,7 +32,7 @@ jobs:
           # this is the equivalent of 'git fetch ; git tag | fgrep ...' but much faster
           echo "lasttag=$(git ls-remote --tags origin | fgrep production | cut -d/ -f3- | sort -n | tail -1)" | tee -a $GITHUB_OUTPUT
       - name: Set up JDK
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           java-version: ${{ env.JDK_VERSION }}
           distribution: 'temurin'
