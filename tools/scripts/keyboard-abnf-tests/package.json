@@ -11,7 +11,7 @@
   "description": "Tests for the keyboard ABNF",
   "private": true,
   "dependencies": {
-    "abnf": "^5.0.4",
+    "abnf": "^5.0.5",
     "fast-xml-parser": "^5.10.1",
     "peggy": "^5.1.0"
   }
